@@ -149,7 +149,15 @@ public class BubbleActivity extends Activity {
 				// You can get all Views in mFrame using the
 				// ViewGroup.getChildCount() method
 
-                if()
+				for(int index = 0; index < mFrame.getChildCount(); index++){
+					BubbleView mBubble = (BubbleView) mFrame.getChildAt(index);
+
+					if(mBubble.intersects(event.getX(), event.getY())){
+						mBubble.stop(true);
+                        return true;
+					}
+				}
+
 				BubbleView mBubble = new BubbleView(getApplicationContext(), event.getX(),event.getY());
 				mBubble.start();
 
@@ -326,10 +334,11 @@ public class BubbleActivity extends Activity {
 
 			// TODO - Return true if the BubbleView intersects position (x,y)
 
-            if(mXPos == x + mRadius || mYPos == y - mRadius){
+            if((x > mXPos && x < mXPos+mScaledBitmapWidth ) && (y > mYPos && y <mYPos+mScaledBitmapWidth)){
+                Log.d("alper", "intersects true");
                 return true;
             }
-			
+
 		    return false;
 		}
 
