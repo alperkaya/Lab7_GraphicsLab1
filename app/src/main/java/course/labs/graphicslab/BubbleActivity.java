@@ -62,7 +62,6 @@ public class BubbleActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.main);
-        Log.d("alper", "onCreate");
 
 		// Set up user interface
 		mFrame = (RelativeLayout) findViewById(R.id.frame);
@@ -133,7 +132,18 @@ public class BubbleActivity extends Activity {
 				// TODO - Implement onFling actions.
 				// You can get all Views in mFrame using the
 				// ViewGroup.getChildCount() method
-                int bubbleCount = mFrame.getChildCount();
+                for(int index = 0; index < mFrame.getChildCount(); index++){
+                    BubbleView mBubble = (BubbleView) mFrame.getChildAt(index);
+
+
+                    if(mBubble.intersects(event1.getX(), event1.getY())){
+                        Log.d("alper", "velocityX: "+velocityX/40);
+                        Log.d("alper", "velocityY: "+velocityY/40);
+                        mBubble.deflect(velocityX,velocityY);
+                        return true;
+                    }
+
+                }
 
 				return false;
 
@@ -149,7 +159,15 @@ public class BubbleActivity extends Activity {
 				// You can get all Views in mFrame using the
 				// ViewGroup.getChildCount() method
 
-                if()
+				for(int index = 0; index < mFrame.getChildCount(); index++){
+					BubbleView mBubble = (BubbleView) mFrame.getChildAt(index);
+
+					if(mBubble.intersects(event.getX(), event.getY())){
+						mBubble.stop(true);
+                        return true;
+					}
+				}
+
 				BubbleView mBubble = new BubbleView(getApplicationContext(), event.getX(),event.getY());
 				mBubble.start();
 
@@ -309,8 +327,6 @@ public class BubbleActivity extends Activity {
                     // Otherwise, request that the BubbleView be redrawn.
 
                     if(!moveWhileOnScreen()){
-                        Log.d("alper", "!moveWhileOnScreen: ");
-
                         stop(false);
                     } else{
                         postInvalidate();
@@ -326,10 +342,10 @@ public class BubbleActivity extends Activity {
 
 			// TODO - Return true if the BubbleView intersects position (x,y)
 
-            if(mXPos == x + mRadius || mYPos == y - mRadius){
+            if((x > mXPos && x < mXPos+mScaledBitmapWidth ) && (y > mYPos && y <mYPos+mScaledBitmapWidth)){
                 return true;
             }
-			
+
 		    return false;
 		}
 
@@ -338,8 +354,6 @@ public class BubbleActivity extends Activity {
 		// Play pop sound if the BubbleView was popped
 
 		private void stop(final boolean wasPopped) {
-            Log.d("alper", "stop(): ");
-
 			if (null != mMoverFuture && !mMoverFuture.isDone()) {
 				mMoverFuture.cancel(true);
 			}
